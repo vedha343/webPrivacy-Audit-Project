@@ -12,7 +12,7 @@ st.markdown("---")
 
 # 3. Load Data
 try:
-    df = pd.read_csv("privacy_audit_report.csv")
+  df = pd.read_csv("Privacy_audit_report.csv")
     
     # metrics
     total_sites = len(df)
@@ -52,4 +52,5 @@ try:
 
 except Exception as e:
     st.error(f"⚠️ Error loading data: {e}")
+
     st.info("Make sure 'privacy_audit_report.csv' is in the same folder and closed!")
