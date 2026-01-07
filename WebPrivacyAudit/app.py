@@ -1,43 +1,45 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Privacy Auditor", page_icon="🔒", layout="wide")
 
 # --- HEADER ---
 st.title("🔒 University Privacy Compliance Auditor")
-st.markdown("### 🕵️ Automated Detection of 'Pre-Consent' Tracking Cookies")
-st.markdown("This dashboard analyzes whether educational websites track users illegally before they accept cookies.")
 st.divider()
 
-# --- LOAD DATA ---
+# --- SMART FILE LOADER ---
+# This block looks for the file in the current folder AND the main folder
+file_name = "Privacy_audit_report.csv"
+main_folder_path = f"../{file_name}" # Looks one step back
+
 try:
-    # FIXED: Using Capital 'P' to match your GitHub file exactly
-    df = pd.read_csv("Privacy_audit_report.csv")
+    if os.path.exists(file_name):
+        df = pd.read_csv(file_name)
+    elif os.path.exists(main_folder_path):
+        df = pd.read_csv(main_folder_path)
+    else:
+        # If both fail, trigger the error
+        raise FileNotFoundError
     
     # --- METRICS LOGIC ---
     total_sites = len(df)
-    
-    # We look for "YES" in the violation column to count bad sites
     violations = len(df[df['Has_Tracking_Cookies'].astype(str).str.contains("YES")])
     safe_sites = total_sites - violations
 
     # --- TOP METRICS ROW ---
     col1, col2, col3 = st.columns(3)
-    col1.metric("🌐 Total Websites Scanned", total_sites)
-    col2.metric("✅ Safe / Compliant", safe_sites)
-    col3.metric("⚠️ Privacy Violations", violations, delta="- High Risk", delta_color="inverse")
+    col1.metric("🌐 Total Websites", total_sites)
+    col2.metric("✅ Safe", safe_sites)
+    col3.metric("⚠️ Violations", violations, delta="- High Risk", delta_color="inverse")
 
-    st.write("") # Spacer
-
-    # --- CHARTS AND TABLES ---
+    # --- CHARTS ---
     c1, c2 = st.columns([2, 1])
 
     with c1:
-        st.subheader("📋 Detailed Forensic Report")
-        
-        # Filter Options
+        st.subheader("📋 Detailed Report")
         filter_opt = st.radio("Show:", ["All Websites", "Violations Only"], horizontal=True)
         
         if filter_opt == "Violations Only":
@@ -45,27 +47,22 @@ try:
         else:
             display_df = df
             
-        # Color Coding: Red for Violation, Green for Safe
         def highlight_row(val):
             color = '#ffcccb' if 'YES' in str(val) else '#c9f7c4'
             return f'background-color: {color}'
 
-        # Show the table
         st.dataframe(display_df.style.map(highlight_row, subset=['Has_Tracking_Cookies']), use_container_width=True)
 
     with c2:
         st.subheader("📊 Compliance Ratio")
         if total_sites > 0:
-            fig = px.pie(
-                values=[safe_sites, violations], 
-                names=["Safe", "Violations"], 
-                color_discrete_sequence=["#00CC96", "#EF553B"], 
-                hole=0.4
-            )
+            fig = px.pie(values=[safe_sites, violations], names=["Safe", "Violations"], 
+                         color_discrete_sequence=["#00CC96", "#EF553B"], hole=0.4)
             st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.warning("No data found.")
 
 except FileNotFoundError:
-    st.error("🚨 ERROR: 'Privacy_audit_report.csv' not found.")
-    st.info("Check the filename on GitHub! It is Case Sensitive.")
+    st.error(f"🚨 ERROR: Could not find '{file_name}'")
+    st.warning("Debugging Info:")
+    st.write(f"1. We looked in: {os.getcwd()}")
+    st.write(f"2. We also looked in the folder above.")
+    st.write("Files we CAN see here:", os.listdir())
