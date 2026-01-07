@@ -1,0 +1,11 @@
+Website,Status,Total_Cookies,Has_Tracking_Cookies,Detailed_List,Scan_Time
+https://www.chaitanya.edu.in,Accessible,0,No,,1/6/2026 9:19
+https://jntuh.ac.in,Accessible,1,No,ci_session [Functional (Safe)],1/6/2026 9:19
+https://www.kakatiya.ac.in,Failed/Timeout,0,N/A,"('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))",1/6/2026 9:19
+https://sru.edu.in,Accessible,0,No,,1/6/2026 9:19
+https://www.cbit.ac.in,Accessible,0,No,,1/6/2026 9:19
+https://www.lpu.in,Accessible,0,No,,1/6/2026 9:19
+https://www.amity.edu,Failed/Timeout,0,N/A,"HTTPSConnectionPool(host='www.amity.edu', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))",1/6/2026 9:19
+https://www.upgrad.com,Accessible,0,YES (Violation),"_ga [Analytics], _fbp [Marketing]",1/6/2026 9:19
+https://www.byjus.com,Accessible,0,YES (Violation),,1/6/2026 9:20
+https://www.coursera.org,Accessible,2,YES (Violation),,1/6/2026 9:20
