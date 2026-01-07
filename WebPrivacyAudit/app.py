@@ -10,20 +10,19 @@ st.set_page_config(page_title="Privacy Auditor", page_icon="🔒", layout="wide"
 st.title("🔒 University Privacy Compliance Auditor")
 st.divider()
 
-# --- SMART FILE LOADER ---
-# This block looks for the file in the current folder AND the main folder
+# --- ROBUST FILE LOADER ---
+# The server starts at the Root. We need to check inside the folder.
 file_name = "Privacy_audit_report.csv"
-main_folder_path = f"../{file_name}" # Looks one step back
+folder_path = "WebPrivacyAudit/" + file_name  # <--- THIS IS THE FIX
 
 try:
     if os.path.exists(file_name):
         df = pd.read_csv(file_name)
-    elif os.path.exists(main_folder_path):
-        df = pd.read_csv(main_folder_path)
+    elif os.path.exists(folder_path):
+        df = pd.read_csv(folder_path) # Loads from WebPrivacyAudit/Privacy_audit_report.csv
     else:
-        # If both fail, trigger the error
         raise FileNotFoundError
-    
+
     # --- METRICS LOGIC ---
     total_sites = len(df)
     violations = len(df[df['Has_Tracking_Cookies'].astype(str).str.contains("YES")])
@@ -61,8 +60,8 @@ try:
             st.plotly_chart(fig, use_container_width=True)
 
 except FileNotFoundError:
-    st.error(f"🚨 ERROR: Could not find '{file_name}'")
-    st.warning("Debugging Info:")
-    st.write(f"1. We looked in: {os.getcwd()}")
-    st.write(f"2. We also looked in the folder above.")
-    st.write("Files we CAN see here:", os.listdir())
+    st.error(f"🚨 ERROR: Still cannot find the file!")
+    st.warning("Debugging - The file is definitely missing from both locations.")
+    st.write("We looked in Root:", os.listdir())
+    if os.path.exists("WebPrivacyAudit"):
+        st.write("We looked in WebPrivacyAudit folder:", os.listdir("WebPrivacyAudit"))
